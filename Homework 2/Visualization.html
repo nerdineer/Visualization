@@ -5,15 +5,20 @@
 		<div style="color:white; text-align:center; text-transform:uppercase; letter-spacing:3px">
 			<b>Twitch Visualization Concept</b>
 		</div>
-		<svg width="960" height="960" font-family="sans-serif" font-size="10" text-anchor="middle" style="align:center;"></svg>
+		<svg id="activeChannels" width="960" height="960" font-family="sans-serif" font-size="10" text-anchor="middle" style="align:center;"></svg>
+		<svg id="activeUsers" width="960" height="960" font-family="sans-serif" font-size="10" text-anchor="middle" style="align:center;"></svg>
 	</body>
 
 <script src="https://d3js.org/d3.v4.min.js"></script>
 <script>
 
-var svg = d3.select("svg"),
-    width = +svg.attr("width"),
-    height = +svg.attr("height");
+var activeChannels = d3.select("#activeChannels"),
+    width = +activeChannels.attr("width"),
+    height = +activeChannels.attr("height");
+
+var activeUsers = d3.select("#activeUsers"),
+    width = +activeUsers.attr("width"),
+    height = +activeUsers.attr("height");
 
 var format = d3.format(",d");
 
@@ -39,7 +44,7 @@ d3.csv("data.csv", function(d) {
         }
       });
 
-  var node = svg.selectAll(".node")
+  var node = activeChannels.selectAll(".node")
     .data(pack(root).leaves())
     .enter().append("g")
       .attr("class", "node")
@@ -50,14 +55,54 @@ d3.csv("data.csv", function(d) {
       .attr("r", function(d) { return d.r; })
       .style("fill", function(d) { return color(d.package); });
 
-  node.append("text")
-    .selectAll("tspan")
-    .data(function(d) { return d.data.name; })
-    .enter().append("tspan")
-      .attr("fill", "white")
-      .attr("x", function(d, i, nodes) { return 13 + (i - nodes.length / 2 - 0.5) * 10; })
-      .attr("y", 0)
-      .text(function(d) {return d; });
+  // node.append("text")
+  //   .selectAll("tspan")
+  //   .data(function(d) { return d.data.name; })
+  //   .enter().append("tspan")
+  //     .attr("fill", "white")
+  //     .attr("x", function(d, i, nodes) { return 13 + (i - nodes.length / 2 - 0.5) * 10; })
+  //     .attr("y", 0)
+  //     .text(function(d) {return d; });
+
+  node.append("title")
+      .text(function(d) { return d.data.name; });
+});
+
+d3.csv("activeusers.csv", function(d) {
+  d.value = +d.value;
+  if (d.value) return d;
+}, function(error, classes) {
+  if (error) throw error;
+  var root = d3.hierarchy({children: classes})
+      .sum(function(d) { return d.value; })
+      .each(function(d) {
+        if (id = d.data.id) {
+          var id, i = id.lastIndexOf(".");
+          d.id = id;
+          d.package = id.slice(0, i);
+          d.class = id.slice(i + 1);
+        }
+      });
+
+  var node = activeUsers.selectAll(".node")
+    .data(pack(root).leaves())
+    .enter().append("g")
+      .attr("class", "node")
+      .attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
+
+  node.append("circle")
+      .attr("id", function(d) { return d.value; })
+      .attr("r", function(d) { return d.r; })
+      .style("fill", function(d) { return color(d.package); });
+
+  // node.append("text")
+  //   .selectAll("tspan")
+  //   .data(function(d) { return d.data.name; })
+  //   .enter().append("tspan")
+  //     .attr("fill", "white")
+  //     .attr("x", function(d, i, nodes) { return 13 + (i - nodes.length / 2 - 0.5) * 10; })
+  //     .attr("y", 0)
+  //     .text(function(d) {return d; });
 
   node.append("title")
       .text(function(d) { return d.data.name; });
