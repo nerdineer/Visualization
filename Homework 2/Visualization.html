@@ -3,7 +3,11 @@
 
 	<body style="background-color:#16161d;">
 		<div style="color:white; text-align:center; text-transform:uppercase; letter-spacing:3px border-bottom:4em;">
-			<b>Twitch Visualization Concept</b>
+			<h1>Twitch Visualization Concept</h1>
+      <p>
+        The data for this is static, and was pulled on April 15, 2017. The data is from the top 20 streamers from that day. All times are UTC, server time.  
+        There is a hover feature on each circle that will reveal more detailed information about the circle data, as well as a click feature that reveals the name of the streamer, person who sent the chat or the message itself. 
+      </p>
 		</div>
     <br>
     <br>
@@ -17,19 +21,25 @@
     </div>
 		<svg id="activeUsers" width="1200" height="960" font-family="sans-serif" font-size="10" text-anchor="middle" style="align:center;"></svg>
 
-    <div style="color:white; text-align:center; text-transform:uppercase; letter-spacing:3px;">
-         <b> Number of messages sent in an hour Timeframe (UTC) </b>
-    </div>
-    <svg id="activeChatTimes" width="1200" height="1000" font-family="sans-serif" font-size="10" text-anchor="middle" style="align:center; background-color:white"></svg>
-
-    <div style="color:white; text-align:center; text-transform:uppercase; letter-spacing:3px; padding-top:10em;">
+     <div style="color:white; text-align:center; text-transform:uppercase; letter-spacing:3px; padding-top:10em;">
          <b> How many times the same message was sent ( One hour period ) </b>
     </div>
     <svg id="messagesSent" width="1200" height="960" font-family="sans-serif" font-size="10" text-anchor="middle" style="align:center;"></svg>
+
+    <div style="color:white; text-align:center; text-transform:uppercase; letter-spacing:3px;">
+         <b> Number of messages sent in an hour Timeframe (Military Time) </b>
+    </div>
+    <svg id="activeChatTimes" width="1200" height="1000" font-family="sans-serif" font-size="10" text-anchor="middle" style="align:center; background-color:white"></svg>
+
+   
 	</body>
 
 <script src="https://d3js.org/d3.v4.min.js"></script>
 <style>
+
+.textOutline{
+    text-shadow: -3px 0 black, 0 2px black, 2px 0 black, 0 -2px black;
+}
 .tick{
   background-color: white;
 }
@@ -119,13 +129,13 @@ d3.csv("data.csv", function(d) {
     .selectAll("tspan")
     .data(function(d) { return d.data.name; })
     .enter().append("tspan")
-      .attr("fill", "white")
+      .attr("fill", "black")
       .attr("x", function(d, i, nodes) { return 13 + (i - nodes.length / 2 - 0.5) * 10; })
       .attr("y", 0)
       .text(function(d) {return d; });
 
   node.append("title")
-      .text(function(d) { return d.data.name + " had "+d.value+" messages during their streaming time."; });
+      .text(function(d) { return d.data.name + " had "+d.value+" messages."; });
 });
 
 d3.csv("activeusers.csv", function(d) {
@@ -170,7 +180,7 @@ d3.csv("activeusers.csv", function(d) {
     .selectAll("tspan")
     .data(function(d) { return d.data.name; })
     .enter().append("tspan")
-      .attr("fill", "white")
+      .attr("fill", "black")
       .attr("x", function(d, i, nodes) { return 13 + (i - nodes.length / 2 - 0.5) * 10; })
       .attr("y", 0)
       .text(function(d) {return d; });
@@ -297,13 +307,13 @@ d3.csv("messageSent.csv", function(d) {
     .selectAll("tspan")
     .data(function(d) { return d.data.name; })
     .enter().append("tspan")
-      .attr("fill", "white")
+      .attr("fill", "blalck")
       .attr("x", function(d, i, nodes) { return 13 + (i - nodes.length / 2 - 0.5) * 10; })
       .attr("y", 0)
       .text(function(d) {return d; });
 
   node.append("title")
-      .text(function(d) { return d.data.name + " was sent "+d.value+" times in a one hour period."; });
+      .text(function(d) { return d.data.name + " was sent "+d.value+" times."; });
 });
 
 </script>
